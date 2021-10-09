@@ -12,20 +12,21 @@ import (
 )
 
 func main(){
-	time.Now()
 	// Initialize a connection pool and assign it to the pool global
 	// variable.
+	time.Now()
 	pool = &redis.Pool{
-		MaxIdle:     10,
-		IdleTimeout: 240 * time.Second,
 		Dial: func() (redis.Conn, error) {
-			return redis.Dial("tcp", "localhost:6379")
+			return redis.Dial("tcp", "localhost:49153")
 		},
+		MaxIdle:         10,
+		MaxActive:       0,
+		IdleTimeout:     240 * time.Second,
+		Wait:            false,
+		MaxConnLifetime: 0,
 	}
 
 	e := echo.New()
-
 	e.POST("/add", addUrl)
-
 	e.Logger.Fatal(e.Start(":8080"))
 }

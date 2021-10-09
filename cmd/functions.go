@@ -2,6 +2,7 @@ package main
 
 import (
 	// "errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gomodule/redigo/redis"
@@ -19,21 +20,31 @@ type UrlObject struct {
 
 // e.POST("/new", new)
 func addUrl(c echo.Context)  error {
-
-
 	// Get name and email
-	name := c.FormValue("name")
-	source_url  := c.FormValue("url")
-	short_url	:= generateShortUrl(name, source_url)
-	//	target_url	:= # C
-	return c.String(http.StatusOK, "name:" + name + ", url:" + source_url + ", short:" + short_url)
+	data := echo.Map{}
+    if err := c.Bind(&data); err != nil {
+        return err
+    } else {
+        name := fmt.Sprintf("%v", data["name"])
+        url := fmt.Sprintf("%v", data["url"])
+		short_url	:= generateShortUrl(name, url)
+		return c.String(http.StatusOK, "name:" + name + ", url:" + url + ", short:" + short_url)
+    }
+
 }
 
 func generateShortUrl(name string, url string)(string) {
 	conn := pool.Get()
 	defer conn.Close()
 
-	conn.Do("SET", "foo", "bar")
-
-	return "ok"
+	conn.Do("SET", name, url)
+	fmt.Println("Added ", name, url)
+	return name
 }
+
+// func getItem(name string){
+// 	conn := pool.Get()
+// 	defer conn.Close()
+// 	conn.Do("GET", "name")
+// 	return "ok"
+// }

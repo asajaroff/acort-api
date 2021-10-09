@@ -25,3 +25,9 @@ This is a golang based API that receives one or more arguments and returns a sho
     "url": ""
 }
 ```
+
+## Setup
+
+``` bash
+GO11MODULE=on go get github.com/labstack/echo/v4
+```
